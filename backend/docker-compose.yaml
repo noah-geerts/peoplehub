@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres:16 # Latest stable Postgres version
+    container_name: peoplehub_postgresdb
+    restart: always
+    environment:
+      POSTGRES_USER: peoplehub # DB username
+      POSTGRES_PASSWORD: peoplehub123 # DB password
+      POSTGRES_DB: peoplehub # Initial database
+    ports:
+      - "5432:5432" # Expose Postgres on host
