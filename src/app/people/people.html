@@ -1,0 +1,58 @@
+<div class="people-table">
+  <div class="labels-row">
+    <p>Employee ID</p>
+    <p>First Name</p>
+    <p>Last Name</p>
+    <p>Email</p>
+    <p>Salary</p>
+    <p>Actions</p>
+  </div>
+  @for (employee of employeeManager.getEmployees(); track employee.eid) {
+    <app-employee-row [employee]="employee"></app-employee-row>
+  }
+</div>
+<button id="add-employee" (click)="openModal()">Add Employee</button>
+<app-modal
+  [isOpen]="isModalOpen()"
+  (closeEvent)="closeModal()"
+  (cancelEvent)="closeModal()"
+  [okDisabled]="this.createEmployeeForm.invalid"
+  (okEvent)="createEmployee()"
+  okText="create"
+  title="Create Employee"
+>
+  <form id="create-employee-form" [formGroup]="createEmployeeForm">
+    <label for="first">
+      First Name
+      <input
+        [ngClass]="{ invalid: createEmployeeForm.get('first')?.invalid }"
+        type="text"
+        formControlName="first"
+      />
+    </label>
+    <label for="last">
+      Last Name
+      <input
+        [ngClass]="{ invalid: createEmployeeForm.get('last')?.invalid }"
+        type="text"
+        formControlName="last"
+      />
+    </label>
+    <label for="email">
+      Email Address
+      <input
+        [ngClass]="{ invalid: createEmployeeForm.get('email')?.invalid }"
+        type="email"
+        formControlName="email"
+      />
+    </label>
+    <label for="salary">
+      Salary
+      <input
+        [ngClass]="{ invalid: createEmployeeForm.get('salary')?.invalid }"
+        type="number"
+        formControlName="salary"
+      />
+    </label>
+  </form>
+</app-modal>

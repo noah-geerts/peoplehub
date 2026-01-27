@@ -1,0 +1,25 @@
+#row-container {
+  height: 60px;
+  border-bottom-width: 1px;
+  border-bottom-color: lightgray;
+  border-bottom-style: solid;
+  display: grid;
+  grid-template-columns: 3fr 2fr 2fr 2fr 2fr 2fr;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+p {
+  display: flex;
+  align-items: center;
+}
+
+div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+input.invalid {
+  border-color: red;
+}

@@ -1,0 +1,49 @@
+:host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 24px;
+  gap: 24px;
+}
+
+.people-table {
+  width: 100%;
+  flex: 1;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.labels-row {
+  height: 60px;
+  border-bottom-width: 1px;
+  border-bottom-color: lightgray;
+  border-bottom-style: solid;
+  display: grid;
+  grid-template-columns: 3fr 2fr 2fr 2fr 2fr 2fr;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-weight: bold;
+}
+
+.labels-row p {
+  display: flex;
+  align-items: center;
+}
+
+#add-employee {
+  height: 36px;
+}
+
+#create-employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invalid {
+  border-color: red;
+}

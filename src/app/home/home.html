@@ -1,0 +1,12 @@
+<div class="card-row">
+  <div class="card-wrapper">
+    <app-card>
+      <p>{{ employeeManager.getEmployees().length }} Employees</p>
+    </app-card>
+  </div>
+  <div class="card-wrapper">
+    <app-card>
+      <p>{{ avgSalary() | number: '1.0-2' }}$ Average Salary</p>
+    </app-card>
+  </div>
+</div>
