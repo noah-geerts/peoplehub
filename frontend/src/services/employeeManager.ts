@@ -1,55 +1,26 @@
-import { Injectable, signal } from '@angular/core';
-import { Employee } from '../types/employee';
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
+import { Employee } from "../types/employee";
+import { catchError } from "rxjs";
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class EmployeeManager {
-  // Only expose readonly signal so that all employee logic happens in this service's methods
-  private _employees = signal<Employee[]>([
-    {
-      eid: crypto.randomUUID(),
-      first: 'Bob',
-      last: 'Morris',
-      email: 'bobmorris@outlook.com',
-      salary: 112000,
-    },
-    {
-      eid: crypto.randomUUID(),
-      first: 'Saint',
-      last: 'Jude',
-      email: 'stjude@outlook.com',
-      salary: 101000,
-    },
-  ]);
-  employees = this._employees.asReadonly();
+    httpClient = inject(HttpClient);
+    baseURL = "http://localhost:8080/employees"
 
-  // Create
-  createEmployee(newEmployee: Employee) {
-    this._employees.update((employees) => {
-      return [...employees, { ...newEmployee, eid: crypto.randomUUID() }];
-    });
-  }
+    createEmployee(employee: Employee) {
+        return this.httpClient.post(this.baseURL, employee);
+    }
 
-  // Read (get all employees)
-  getEmployees(): Employee[] {
-    return this._employees();
-  }
+    getAllEmployees() {
+        return this.httpClient.get<Employee[]>(this.baseURL);
+    }
 
-  // Read (get employee by id)
-  getEmployeeById(eid: string): Employee | undefined {
-    return this._employees().find((emp) => emp.eid === eid);
-  }
+    updateEmployee(eid: string, employee: Employee) {
+        return this.httpClient.patch(this.baseURL + "/" + eid, employee);
+    }
 
-  // Update
-  updateEmployee(eid: string, updatedFields: Partial<Employee>) {
-    this._employees.update((employees) =>
-      employees.map((emp) => (emp.eid === eid ? { ...emp, ...updatedFields, eid } : emp)),
-    );
-  }
-
-  // Delete
-  deleteEmployee(eid: string) {
-    this._employees.update((employees) => employees.filter((emp) => emp.eid !== eid));
-  }
+    deleteEmployee(eid: string) {
+        return this.httpClient.delete(this.baseURL + "/" + eid);
+    }
 }

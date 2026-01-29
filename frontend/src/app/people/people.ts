@@ -1,19 +1,25 @@
 import { Component, inject, signal } from '@angular/core';
-import { EmployeeManager } from '../../services/employeeManager';
 import { EmployeeRow } from './employee/employee-row';
 import { Modal } from '../components/modal/modal';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { EmployeeManager } from '../../services/employeeManager';
+import { getResource } from '../common/getResource';
 
 @Component({
   selector: 'app-people',
-  imports: [EmployeeRow, Modal, ReactiveFormsModule, NgClass],
+  imports: [EmployeeRow, Modal, ReactiveFormsModule, NgClass, AsyncPipe],
   templateUrl: './people.html',
   styleUrl: './people.css',
 })
 export class People {
   readonly employeeManager = inject(EmployeeManager);
+  employeeResource = getResource(() => this.employeeManager.getAllEmployees());
   isModalOpen = signal(false);
+
+  refetch() {
+    this.employeeResource().refetch();
+  }
 
   openModal() {
     this.isModalOpen.set(true);
@@ -41,7 +47,7 @@ export class People {
       last: this.createEmployeeForm.value.last,
       email: this.createEmployeeForm.value.email,
       salary: Number(this.createEmployeeForm.value.salary),
-    });
+    }).subscribe({ next: this.refetch });
     this.closeModal();
   }
 
