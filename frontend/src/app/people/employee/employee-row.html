@@ -1,64 +1,42 @@
 @if (!editing()) {
-  <div id="row-container">
-    <p>{{ employee.eid }}</p>
-    <p>{{ employee.first }}</p>
-    <p>{{ employee.last }}</p>
-    <p>{{ employee.email }}</p>
-    <p>{{ employee.salary | number: '1.2-2' }}$</p>
-    <div>
-      <button (click)="handleEditOrSave()">{{ editing() ? 'Save' : 'Edit' }}</button>
-      <button (click)="openModal()">Delete</button>
-    </div>
+<div id="row-container">
+  <p>{{ employee.eid }}</p>
+  <p>{{ employee.first }}</p>
+  <p>{{ employee.last }}</p>
+  <p>{{ employee.email }}</p>
+  <p>{{ employee.salary | number: '1.2-2' }}$</p>
+  <div>
+    <button [disabled]="updateEmployeeMutater!().loading" (click)="handleEditOrSave()">{{ editing() ? 'Save' : 'Edit'
+      }}</button>
+    <button (click)="openModal()">Delete</button>
   </div>
+</div>
 } @else {
-  <form id="row-container" [formGroup]="employeeForm">
-    <p>{{ employee.eid }}</p>
-    <div>
-      <input
-        [ngClass]="{ invalid: employeeForm.get('first')?.invalid }"
-        id="first"
-        type="text"
-        formControlName="first"
-      />
-      <p>{{ employeeForm.value.first }}</p>
-    </div>
-    <div>
-      <input
-        [ngClass]="{ invalid: employeeForm.get('last')?.invalid }"
-        id="last"
-        type="text"
-        formControlName="last"
-      />
-    </div>
-    <div>
-      <input
-        [ngClass]="{ invalid: employeeForm.get('email')?.invalid }"
-        id="email"
-        type="email"
-        formControlName="email"
-      />
-    </div>
-    <div>
-      <input
-        [ngClass]="{ invalid: employeeForm.get('salary')?.invalid }"
-        id="salary"
-        type="number"
-        formControlName="salary"
-      />
-    </div>
-    <div>
-      <button (click)="handleEditOrSave()">{{ editing() ? 'Save' : 'Edit' }}</button>
-      <button (click)="openModal()">Delete</button>
-    </div>
-  </form>
+<form id="row-container" [formGroup]="employeeForm">
+  <p>{{ employee.eid }}</p>
+  <div>
+    <input [ngClass]="{ invalid: employeeForm.get('first')?.invalid }" id="first" type="text" formControlName="first" />
+    <p>{{ employeeForm.value.first }}</p>
+  </div>
+  <div>
+    <input [ngClass]="{ invalid: employeeForm.get('last')?.invalid }" id="last" type="text" formControlName="last" />
+  </div>
+  <div>
+    <input [ngClass]="{ invalid: employeeForm.get('email')?.invalid }" id="email" type="email"
+      formControlName="email" />
+  </div>
+  <div>
+    <input [ngClass]="{ invalid: employeeForm.get('salary')?.invalid }" id="salary" type="number"
+      formControlName="salary" />
+  </div>
+  <div>
+    <button [disabled]="updateEmployeeMutater!().loading" (click)="handleEditOrSave()">{{ editing() ? 'Save' : 'Edit'
+      }}</button>
+    <button (click)="openModal()">Delete</button>
+  </div>
+</form>
 }
-<app-modal
-  [isOpen]="isModalOpen()"
-  (closeEvent)="closeModal()"
-  (cancelEvent)="closeModal()"
-  (okEvent)="deleteEmployee()"
-  title="Delete Employee"
-  okText="confirm"
->
+<app-modal [isOpen]="isModalOpen()" (closeEvent)="closeModal()" (cancelEvent)="closeModal()"
+  (okEvent)="deleteEmployee()" [loading]="deleteEmployeeMutater!().loading" title="Delete Employee" okText="confirm">
   <p>Are you sure you want to delete employee {{ employee.first + ' ' + employee.last }}</p>
 </app-modal>

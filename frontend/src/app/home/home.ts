@@ -12,7 +12,12 @@ import { getResource } from '../common/getResource';
 })
 export class Home {
   readonly employeeManager = inject(EmployeeManager);
-  employeesVM = getResource(() => this.employeeManager.getAllEmployees());
+  employeesVM = this.employeeManager.getAllEmployees();
+  canLeave = false;
+
+  toggleCanLeave() {
+    this.canLeave = !this.canLeave;
+  }
 
   readonly avgSalary = computed(() => {
     let total = 0;

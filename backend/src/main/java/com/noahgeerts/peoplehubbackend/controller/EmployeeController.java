@@ -33,6 +33,7 @@ public class EmployeeController {
     @PostMapping()
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
         logger.info("Creating employee: {}", employee);
+        employee.setEid(null);
         Employee newEmployee = employeeRepo.save(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(newEmployee);
     }

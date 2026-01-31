@@ -2,19 +2,19 @@ import { Component, inject, signal } from '@angular/core';
 import { EmployeeRow } from './employee/employee-row';
 import { Modal } from '../components/modal/modal';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
 import { EmployeeManager } from '../../services/employeeManager';
-import { getResource } from '../common/getResource';
 
 @Component({
   selector: 'app-people',
-  imports: [EmployeeRow, Modal, ReactiveFormsModule, NgClass, AsyncPipe],
+  imports: [EmployeeRow, Modal, ReactiveFormsModule, NgClass, JsonPipe],
   templateUrl: './people.html',
   styleUrl: './people.css',
 })
 export class People {
   readonly employeeManager = inject(EmployeeManager);
-  employeeResource = getResource(() => this.employeeManager.getAllEmployees());
+  employeeResource = this.employeeManager.getAllEmployees();
+  createEmployeeMutater = this.employeeManager.createEmployee();
   isModalOpen = signal(false);
 
   refetch() {
@@ -41,14 +41,13 @@ export class People {
     )
       throw new Error('Form fields not all valid. Cannot create employee.');
 
-    this.employeeManager.createEmployee({
+    this.createEmployeeMutater().mutate({
       eid: 'N/A',
       first: this.createEmployeeForm.value.first,
       last: this.createEmployeeForm.value.last,
       email: this.createEmployeeForm.value.email,
       salary: Number(this.createEmployeeForm.value.salary),
-    }).subscribe({ next: this.refetch });
-    this.closeModal();
+    }, () => { this.closeModal(); this.refetch(); });
   }
 
   createEmployeeForm = new FormGroup({

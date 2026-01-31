@@ -9,4 +9,6 @@
       <p>{{ avgSalary() | number: '1.0-2' }}$ Average Salary</p>
     </app-card>
   </div>
+  <p>Can you leave? {{canLeave ? "Yes!" : "Nope"}}</p>
+  <button (click)="toggleCanLeave()">Toggle canLeave</button>
 </div>

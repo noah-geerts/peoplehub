@@ -19,7 +19,7 @@ export function getResource<T>(loader: () => Observable<T>): Signal<Resource<T>>
     let subscription: Subscription | undefined;
 
     function refetch() {
-        resource.update(r => ({ ...r, loading: true, data: undefined }));
+        resource.update(r => ({ ...r, loading: true, error: undefined, data: undefined }));
 
         subscription?.unsubscribe();
 

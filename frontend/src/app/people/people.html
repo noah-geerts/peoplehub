@@ -7,13 +7,20 @@
     <p>Salary</p>
     <p>Actions</p>
   </div>
+  @if(employeeResource().loading){
+  <p>loading...</p>
+  } @else {
   @for (employee of employeeResource().data; track employee.eid) {
   <app-employee-row (mutatedEmployee)="refetch()" [employee]="employee"></app-employee-row>
+  }
+  <p>{{ createEmployeeMutater().data| json}}</p>
+  <p>{{createEmployeeMutater().error}}</p>
   }
 </div>
 <button id="add-employee" (click)="openModal()">Add Employee</button>
 <app-modal [isOpen]="isModalOpen()" (closeEvent)="closeModal()" (cancelEvent)="closeModal()"
-  [okDisabled]="this.createEmployeeForm.invalid" (okEvent)="createEmployee()" okText="create" title="Create Employee">
+  [loading]="createEmployeeMutater().loading" [okDisabled]="this.createEmployeeForm.invalid"
+  (okEvent)="createEmployee()" okText="create" title="Create Employee">
   <form id="create-employee-form" [formGroup]="createEmployeeForm">
     <label for="first">
       First Name

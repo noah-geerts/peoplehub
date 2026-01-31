@@ -23,3 +23,8 @@ nav div {
     flex-direction: row;
     gap: 12px;
 }
+
+.active {
+    color: white;
+    font-weight: bold;
+}

@@ -1,9 +1,10 @@
-import { Component, EventEmitter, inject, Input, Output, resource, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, resource, Signal, signal } from '@angular/core';
 import { Employee } from '../../../types/employee';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Modal } from '../../components/modal/modal';
 import { EmployeeManager } from '../../../services/employeeManager';
+import { Mutation } from '../../common/createMutation';
 
 @Component({
   selector: 'app-employee-row',
@@ -15,9 +16,16 @@ export class EmployeeRow {
   @Input({ required: true }) employee!: Employee;
   @Output() mutatedEmployee = new EventEmitter<void>();
   readonly employeeManager = inject(EmployeeManager);
+  updateEmployeeMutater: Signal<Mutation<Employee, Employee>> | undefined;
+  deleteEmployeeMutater: Signal<Mutation<Employee, void>> | undefined;
 
   editing = signal(false);
   isModalOpen = signal(false);
+
+  ngOnInit() {
+    this.updateEmployeeMutater = this.employeeManager.updateEmployee(this.employee.eid);
+    this.deleteEmployeeMutater = this.employeeManager.deleteEmployee(this.employee.eid);
+  }
 
   ////// Modal controls and delete employee ///////
   openModal() {
@@ -29,14 +37,7 @@ export class EmployeeRow {
   }
 
   deleteEmployee() {
-    this.employeeManager.deleteEmployee(this.employee.eid).subscribe({
-      next: () => this.mutatedEmployee.emit()
-    });
-  }
-
-  handleConfirmModal() {
-    this.deleteEmployee();
-    this.closeModal();
+    this.deleteEmployeeMutater!().mutate(undefined, () => { this.closeModal(); this.mutatedEmployee.emit(); })
   }
 
   ////// Form controls and edit employee ///////
@@ -77,15 +78,13 @@ export class EmployeeRow {
     if (this.employeeForm.valid && !isNaN(salary) && this.employeeForm.value.first !== undefined
       && this.employeeForm.value.last !== undefined && this.employeeForm.value.email !== undefined) {
       this.editing.set(false);
-      this.employeeManager.updateEmployee(this.employee.eid, {
+      this.updateEmployeeMutater!().mutate({
         eid: "N/A",
         first: this.employeeForm.value.first,
         last: this.employeeForm.value.last,
         email: this.employeeForm.value.email,
         salary: salary,
-      }).subscribe({
-        next: () => this.mutatedEmployee.emit()
-      });
+      }, () => this.mutatedEmployee.emit());
     }
   }
 }

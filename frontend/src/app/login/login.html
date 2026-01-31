@@ -1,0 +1,15 @@
+<form (submit)="login(); $event.preventDefault()">
+    <label>
+        Username
+        <input type="text" [value]="username()" (input)="username.set($any($event.target).value)"
+            autocomplete="username" />
+    </label>
+
+    <label>
+        Password
+        <input type="password" [value]="password()" (input)="password.set($any($event.target).value)"
+            autocomplete="current-password" />
+    </label>
+
+    <button type="submit">Log in</button>
+</form>
