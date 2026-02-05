@@ -12,6 +12,7 @@ export class Modal {
   @Input() okText = 'ok';
   @Input() title = 'Title';
   @Input() okDisabled = false;
+  @Input() loading = false;
 
   @Output() closeEvent = new EventEmitter();
   @Output() cancelEvent = new EventEmitter();

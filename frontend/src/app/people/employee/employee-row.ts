@@ -1,9 +1,10 @@
-import { Component, inject, Input, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, resource, Signal, signal } from '@angular/core';
 import { Employee } from '../../../types/employee';
 import { DecimalPipe, NgClass } from '@angular/common';
-import { EmployeeManager } from '../../../services/employeeManager';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Modal } from '../../components/modal/modal';
+import { EmployeeManager } from '../../../services/employeeManager';
+import { Mutation } from '../../common/createMutation';
 
 @Component({
   selector: 'app-employee-row',
@@ -13,10 +14,18 @@ import { Modal } from '../../components/modal/modal';
 })
 export class EmployeeRow {
   @Input({ required: true }) employee!: Employee;
+  @Output() mutatedEmployee = new EventEmitter<void>();
   readonly employeeManager = inject(EmployeeManager);
+  updateEmployeeMutater: Signal<Mutation<Employee, Employee>> | undefined;
+  deleteEmployeeMutater: Signal<Mutation<Employee, void>> | undefined;
 
   editing = signal(false);
   isModalOpen = signal(false);
+
+  ngOnInit() {
+    this.updateEmployeeMutater = this.employeeManager.updateEmployee(this.employee.eid);
+    this.deleteEmployeeMutater = this.employeeManager.deleteEmployee(this.employee.eid);
+  }
 
   ////// Modal controls and delete employee ///////
   openModal() {
@@ -28,12 +37,7 @@ export class EmployeeRow {
   }
 
   deleteEmployee() {
-    this.employeeManager.deleteEmployee(this.employee.eid);
-  }
-
-  handleConfirmModal() {
-    this.deleteEmployee();
-    this.closeModal();
+    this.deleteEmployeeMutater!().mutate(undefined, () => { this.closeModal(); this.mutatedEmployee.emit(); })
   }
 
   ////// Form controls and edit employee ///////
@@ -71,14 +75,16 @@ export class EmployeeRow {
 
   save() {
     const salary = Number(this.employeeForm.value.salary);
-    if (this.employeeForm.valid && !isNaN(salary)) {
+    if (this.employeeForm.valid && !isNaN(salary) && this.employeeForm.value.first !== undefined
+      && this.employeeForm.value.last !== undefined && this.employeeForm.value.email !== undefined) {
       this.editing.set(false);
-      this.employeeManager.updateEmployee(this.employee.eid, {
+      this.updateEmployeeMutater!().mutate({
+        eid: "N/A",
         first: this.employeeForm.value.first,
         last: this.employeeForm.value.last,
         email: this.employeeForm.value.email,
         salary: salary,
-      });
+      }, () => this.mutatedEmployee.emit());
     }
   }
 }

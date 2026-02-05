@@ -1,14 +1,19 @@
 @if (isOpen) {
-  <main (click)="close()">
-    <div class="modal-content" (click)="stopDivCloseModal($event)">
-      <h3>{{ title }}</h3>
-      <div class="content-container">
-        <ng-content />
-      </div>
-      <div class="buttons-container">
-        <button (click)="cancel()">{{ cancelText }}</button>
-        <button [disabled]="okDisabled" (click)="ok()">{{ okText }}</button>
-      </div>
+<main (click)="close()">
+  <div class="modal-content" (click)="stopDivCloseModal($event)">
+    @if(loading){
+    <p>loading...</p>
+    }
+    @else {
+    <h3>{{ title }}</h3>
+    <div class="content-container">
+      <ng-content />
     </div>
-  </main>
+    <div class="buttons-container">
+      <button (click)="cancel()">{{ cancelText }}</button>
+      <button [disabled]="okDisabled" (click)="ok()">{{ okText }}</button>
+    </div>
+    }
+  </div>
+</main>
 }
